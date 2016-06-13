@@ -11,7 +11,7 @@ shinyUI(
  fluidPage(
    
   # Application title
-  titlePanel("BayVonBe BVB! Bayesian Von Bertalanffy Growth Model"),
+  titlePanel("B-VBGM! Bayesian Von Bertalanffy Growth Model"),
   # Application title
  # HTML("<font face='georgia' color=#000080><h1>Wise Catfish Farmer <img src='catfish.png' height='40' width='100' align='right'></font></h1>"),
   navbarPage(NULL,
@@ -30,7 +30,7 @@ shinyUI(
                       HTML("group at the Mediterranean Institute of Advances Studies"),
                       a("(IMEDEA)",href="http://imedea.uib-csic.es/") ,
                       h4("To get started you can use our example data from the paper “Life-history growth-mortality tradeoffs as revealed by otolith geochemistry in a sedentary coastal fish” submitted to MEPS or load your own data."),
-                      h4("If you use our webapp to fit a Bayesian Von Bertalanffy Growth Model (BVBGM) please cite our work as: Catalán, Alós, Díaz...Palmer..etc"),
+                      h4("If you use our webapp to fit a Bayesian Von Bertalanffy Growth Model (B-VBGM) please cite our work as: Catalán, Alós, Díaz...Palmer..etc"),
                     br(),
                     h4("Warning!!! If your specie does not fit in our parameter configuration (see “extra information” tabs), feel free to download the R scripts from out repository at Github and modify it! ")
              ),
@@ -74,22 +74,38 @@ shinyUI(
                       
                       ),
              tabPanel("Extra information population model",
-                      h2("Population BVBGM", align = "center"),
+                      h2("Population B-VBGM", align = "center"),
                       h4("The VBGM parameters are estimated for the whole population using the size-at-age of capture information (years-size), i.e. each individual has only one data point. It can be used with “size” referring to otolith size or fish length. Using a Bayesian hierarchical fitting strategy (Lunn et al. 2000) allows to use some a priori information for the estimates of the parameters. The model is implemented and run using the R2jags library of the R package (http://www.r-project.org/), which opens JAGS (Just Another Gibbs Sampler, http://mathstat.helsinki.fi/openbugs/). Three Monte Carlo Markov Chains (MCMC) are run and semi-informative priors are considered. Specifically, prior distributions are based on the reasoning that all individuals come hierarchically from the same population with common normal distribution (mean = 0 and tolerance (1/square root of s.d.) equal to a value sampled from a gamma distribution with parameters with shape and scale = 0.001). Uniform distributions were considered for the VBGM parameters: t0 from -2 to 2 years, Linf range from 0 to 300 size units (to include the otolith measurements) and k range from 0 to 1 years-1. These values were based on the previous literature reported for small bodied coastal species at population levels (Gordoa and Molí 1997; Pajuelo and Lorenzo 2001; Alós et al. 2010) and in all cases, the posterior distributions were much narrower than a the priors distributions. The first 100,000 iterations for all of the parameters were discarded (burned) and a thinning strategy adopted to ensure the temporal independence of successive values within the chain (only one out of every 10 consecutive values was kept). The convergence of the MCMC chains of all parameters was assessed by visual inspection of the plots of the iterations and tested using the Gelman-Rubin Statistic (Plummer et al. 2006), with values < 1.1 indicating convergence (Gelman et al. 2014). In all cases convergence was obtained after various iterations depending on the simulation (between 3,000 and 9,000 valid iterations) after applying a burning and thinning of the posterior distribution as described above. Among-population differences in the VBGM can be visualized using the Bayesian Credibility Intervals (2.5%-97.5%) of the posterior distribution of each parameter, and the Bayesian means can be used for testing the relationship among the VBGM parameters and any variable of interest."),
-                      h4("If you use our webapp to fit a Bayesian Von Bertalanffy Growth Model (BVBGM) please cite our work as: Catalán, Alós, Díaz...Palmer..etc"),
+                      h4("If you use our webapp to fit a Bayesian Von Bertalanffy Growth Model (B-VBGM) please cite our work as: Catalán, Alós, Díaz...Palmer..etc"),
                       br(),
                       h4("Warning!!! If your specie does not fit in our parameter configuration (see “extra information” tabs), feel free to download the R scripts from out repository at Github and modify it! ")
                       
                       
              ),
              tabPanel("Extra information Individual model",
-                      h2("Individual BVBGM", align = "center"),
+                      h2("Individual B-VBGM", align = "center"),
                       h4("The VBGM parameter are estimated for each individual using a Bayesian hierarchical fitting strategy (Lunn et al. 2000), which allows to use some a priori information for the estimates of the parameters and the complexity of individual modelling. This is the case when you have several size-at-age points for each individual, i.e. back-calculated sizes at different ages (from the otoliths or scales). The model is implemented and run using the R2jags library of the R package (http://www.r-project.org/), which opens JAGS (Just Another Gibbs Sampler, http://mathstat.helsinki.fi/openbugs/). Three Monte Carlo Markov Chains (MCMC) were run and semi-informative priors were considered. Specifically, prior distribution are based on the reasoning that all individuals come hierarchically from the same population with common normal distribution (mean = 0 and tolerance (1/square root of s.d.) equal to a value sampled from a gamma distribution with parameters with shape and scale = 0.001). Uniform distributions were considered for the VBGM parameters: t0 from -2 to 2 years, Linf range from 0 to 300 size units (to include the otolith measurements) and k range from 0 to 1 years-1. These values were based on the previous literature reported for small bodied coastal species at population level (Gordoa and Molí 1997; Pajuelo and Lorenzo 2001; Alós et al. 2010) and in all cases, the posterior distributions were much narrower than a priori distributions. The first 100,000 iterations for all of the parameters were discarded (burned) and a thinning strategy adopted to ensure the temporal independence of successive values within the chain (only one out of every 10 consecutive values was kept). The convergence of the MCMC chains of all parameters was assessed by visual inspection of the plots of the iterations and tested using the Gelman-Rubin Statistic (Plummer et al. 2006), with values < 1.1 indicating convergence (Gelman et al. 2014). In all cases convergence was obtained after various iterations depending on the simulation (between 3,000 and 9,000 valid iterations) after applying a burning and thinning of the posterior distribution as described above. Among-individual differences in the VBGM were visualized using the Bayesian Credibility Intervals (2.5%-97.5%) of the posterior distribution of each parameter, and the Bayesian mean was used for testing the relationship among the VBGM parameters and for example the micro-chemical composition of the otoliths as seen in the paper “Life-history growth-mortality tradeoffs as revealed by otolith geochemistry in a sedentary coastal fish”."),
-                      h4("If you use our webapp to fit a Bayesian Von Bertalanffy Growth Model (BVBGM) please cite our work as: Catalán, Alós, Díaz...Palmer..etc"),
+                      h4("If you use our webapp to fit a Bayesian Von Bertalanffy Growth Model (B-VBGM) please cite our work as: Catalán, Alós, Díaz...Palmer..etc"),
                       br(),
                       h4("Warning!!! If your specie does not fit in our parameter configuration (see “extra information” tabs), feel free to download the R scripts from out repository at Github and modify it! ")
                       
-             )
+             ),
+  tabPanel("References",
+           h2("References", align = "center"),
+           
+           h4("Alós, J., Palmer, M., Alonso-Fernández, A. and Morales-Nin, B. (2010) Individual variability and sex-related differences in the growth of Diplodus annularis (Linnaeus, 1758). Fisheries Research 101, 60–69."),
+           h4("Gelman, A., Carlin, J.B., Stern, H.S. and Rubin, D.B. (2014) Bayesian data analysis. Taylor & Francis."),
+           h4("Gordoa, A. and Molí, B. (1997) Age and growth of the sparids Diplodus vulgaris, D. sargus and D. annularis in adult populations and the differences in their juvenile growth patterns in the north-western Mediterranean Sea . Fisheries Research 33, 123–129."),
+           h4("Pajuelo, J.G. and Lorenzo, J.M. (2001) Biology of the annular seabream, Diplodus annularis (Sparidae), in coastal waters of the Canary Islands. Journal of Applied Ichthyology 17, 121–125."),
+           h4("Pilling, G.M., Kirkwood, G.P. and Walker, S.G. (2002) An improved method for estimating individual growth variability in fish, and the correlation between von Bertalanffy growth parameters. Canadian Journal of Fisheries and Aquatic Sciences 59, 424–432."),
+           h4("Plummer, M., Best, N., Cowles, K. and Vines, K. (2006) CODA: convergence diagnosis and output analysis for MCMC. R News 6."),
+           h4("Rohlf, F.J. (2004) tpsDig. version 2.16 (software)."),
+           br(),
+           
+           h4("If you use our webapp to fit a Bayesian Von Bertalanffy Growth Model (B-VBGM) please cite our work as: Catalán, Alós, Díaz...Palmer..etc")
+           
+           
+  )
              
              ),
  
