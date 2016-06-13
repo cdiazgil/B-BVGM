@@ -44,11 +44,18 @@ shinyServer(function(input, output) {
   #  print(data)
   # f1(data())})
   pobparams <- reactive({
-    withProgress(message = 'LOADING...',
+    withProgress(message = 'Running Population Model',
                  detail = 'This may take a while...',value = NULL, {
+                   n <- 10000
+                   
+                   for (i in 1:n) {
+                     
+                     # Increment the progress bar, and update the detail text.
+                     incProgress(amount = 1/n, detail = paste("Iteration", i, "of", n) )
+                     Sys.sleep(0.001)
+                   }
                    f1(data())
-                  })
-    
+                })
   })
   
   output$pobparams <- renderTable({
@@ -70,8 +77,14 @@ shinyServer(function(input, output) {
 #  })
 
 indparams <- reactive({
-  withProgress(message = 'Calculation in progress',
+  withProgress(message = 'Running Individual Model',
                detail = 'This may take a while...',value = 0, {
+                 n <- 100000
+                 
+                 for (i in 1:n) {
+                   # Increment the progress bar, and update the detail text.
+                   incProgress(amount = 1/n, detail = paste("Iteration", i, "of", n) )
+                 }
                  f2(data())
                })
 

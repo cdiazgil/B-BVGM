@@ -1,4 +1,3 @@
-
 # This is the user-interface definition of a Shiny web application.
 # You can find out more about building applications with Shiny here:
 #
@@ -120,6 +119,4 @@ shinyUI(
                   a("R using RStudio's Shiny package. ", href="http://shiny.rstudio.com/"),
                   a("Contact Carlos about the app.", href="mailto:cdiaz@imedea.uib-csic.es")
   ))
-  
-  
 ))
