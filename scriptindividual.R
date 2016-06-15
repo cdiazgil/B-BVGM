@@ -1,5 +1,5 @@
 
-f2 <- function(data){
+f2 <- function(data, iterations, linfrange){
   # Now is time for the Individual models
   library(R2jags) 
   
@@ -10,8 +10,8 @@ f2 <- function(data){
   #-------------
   #STEP 1: INITIALS
   #-------------
-  #getwd()
-  #data<-read.csv(file = "www/Scorpaena.csv",sep=";")
+ # getwd()
+   # data<-read.csv(file = "www/D.annularis.csv",sep=";")
   
   #names(data)
   ID=NULL
@@ -32,9 +32,11 @@ f2 <- function(data){
   maxage=max(Age)
   
   nfish=length(unique(data$fishID))# Sample size
- 
+
+#linfrange<-c(100,300)  
+
   inits <- function() list(
-    Linf=runif(nfish,1,10),
+    Linf=runif(nfish,linfrange[1],linfrange[2]),
     k=runif(nfish,0,1),
     T0=runif(nfish,-1,1),
     tau=1,
@@ -54,14 +56,20 @@ f2 <- function(data){
     nfish=nfish,
     age=data$age,
     size=data$size,
-    ID=data$ID
+    ID=data$ID,
+    maxAge=maxage+2,
+    
+    Linfmin=linfrange[1],
+    Linfmax=linfrange[2]
+    
+    
   )
   
   #-------------
   #STEP 3: INDIVIDUAL BAYESIAN MODEL
   #-------------
   
-  sink("model.txt")
+  sink("individualmodel.txt")
   cat("
     model {
       for( i in 1 : nobs ) {
@@ -82,7 +90,7 @@ f2 <- function(data){
       #prior groups
       mT0~dunif(-2,2)
       mk~dunif(0,1)
-      mLinf~dunif(2,10)
+      mLinf~dunif(Linfmin,Linfmax)
       
       #prior variances (flat prior)
       tau ~ dgamma(0.001,0.001)
@@ -90,7 +98,12 @@ f2 <- function(data){
       tauT0 ~ dgamma(0.001,0.001)
       tauk ~ dgamma(0.001,0.001)
       tauLinf ~ dgamma(0.001,0.001)
-      
+     
+#estimating size at age
+    for(i in 1 : maxAge) {
+    estimated[i]<-mLinf*(1-exp(-mk*(i-(mT0))))
+    }
+
 }
       ",fill = TRUE)
 sink()
@@ -101,15 +114,15 @@ sink()
   #-------------
   
   # Parameters monitored
-  params =c("T0","Linf","k")
+  params =c("T0","Linf","k","mT0","mLinf","mk","estimated")
   
   # MCMC settings
   nt <- 5
-  ni <- 200
+  ni <- 10000
   nb <- 100
   nc <- 3
   
-  out <- jags(jags.data, inits, params, "model.txt", 
+  out <- jags(jags.data, inits, params, "individualmodel.txt", 
               n.chains = nc, n.thin = nt, n.iter = ni, n.burnin = nb)
   
   # Since this is calculating one curve per fish it is really time consuming and 
@@ -123,8 +136,9 @@ sink()
   
   # A rough estimation of how long the updating process will take 
   # is provided here. 
+#iterations=1000
   pre.time <- Sys.time()
-  out <- update(out, n.iter=200,n.thin=10)
+  out <- update(out, n.iter=iterations,n.thin=10)
   post.time <- Sys.time()
   post.time-pre.time
   
@@ -147,7 +161,7 @@ sink()
 f4 <- function(indparams,data){
   
   individual=indparams
-  #individual= out$BUGSoutput$summary
+ # individual= out$BUGSoutput$summary
   
   #data<-read.csv(file = "data.csv",sep=";")
   #names(data)
@@ -176,27 +190,33 @@ f4 <- function(indparams,data){
   Ind=data$ID
   max(Age)
   
-  #windows(height=5.9,width=6.9, pointsize=12) #Just for the right size
-  x=10#grey scale
-  ## Execute all below to see the plots
-  par(mfrow=c(round(max(age)/2),2), mar=c(4,4,2,3))
-  seq=seq(1,max(age)+2)
+  seq=seq(1,max(Age)+2)
   
-  for (j in 2:max(age)){
-    plot(age,size,type="n",xlab="", ylab="", 
-         xlim= c(min(seq),max(seq)), ylim= c(0,max(size)), las=1)
-    
-    mtext("Von Bertalanffy Individual Model", side=3, line=0.5)
-    mtext("Age (years)", side=1, line=2,cex=1)
-    mtext("Size (units of size)", side=2, line=2,cex=1)
-    text(4,1, paste(j,"Year class"), cex=1.2)
-    
-    for(i in 1:nfish){
-      if(AGE[i]==j){
-        temp=which(Ind==i)
-        lines(age[temp],size[temp])
-      }
-    }  
+
+plot(age,size,type="n",main="Von Bertalanffy Individual Model",
+     ylab= "Size (units of size)", xlab="Age (years)", 
+     xlim= c(1,max(seq)), ylim= c(0,max(size)), las=1)
+
+
+for(i in 1:nfish){
+    temp=which(Ind==i)
+    lines(age[temp],size[temp], col="grey")
   }
-  
-  }
+
+
+pre=NULL
+for (i in 1:(max(Age)+2)){
+  temp2=parse(text=paste("individual['estimated[",i,"]',
+                         c(3,5,7)]",sep = ""))
+  pre=rbind(pre,eval(temp2))
+}
+
+# Median estimations of the parameters
+lines(seq(1,max(Age)+2),pre[,2],type="l",col="blue",lwd=2) 
+# Credibility intervals of the estimations
+lines(seq(1,max(Age)+2),pre[,1],col="red",lty=3)
+lines(seq(1,max(Age)+2),pre[,3],col="red",lty=3)
+
+}
+
+

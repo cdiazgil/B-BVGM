@@ -39,6 +39,7 @@ shinyUI(
               
              tabPanel("Use the models", 
                       h4("To get started you can use our example data from the paper 'Life-history growth-mortality tradeoffs as revealed by otolith geochemistry in a sedentary coastal fish' submitted to MEPS or load your own data. You only need to name 'size', 'age' and 'fishID' (which can be alphanumeric) columns."),
+                      h4("Important! Please select the adequate Linf range from the slider below and the number of iterations before hitting 'population' or 'individual' tabs (that will lunch the models)."),
                       br(),
                       sidebarPanel(
                         
@@ -62,8 +63,15 @@ shinyUI(
                                      c(Comma=',',
                                        Semicolon=';',
                                        Tab='\t'),
-                                     ',')
+                                     ';'),
+                        tags$hr(),
+                        sliderInput("linfrange", label = h3("Linf range:"), min = 1, 
+                                    max = 300, value = c(1, 10)
+                        ),
                         
+                        sliderInput("iterationNumber", label=h3("Number of Iterations:"), 
+                                    min=1000, max=100000, value=5000)
+                                      
                       ),
                       
                       mainPanel(   
@@ -117,7 +125,7 @@ shinyUI(
  
   
 
-  fluidRow(column(12,offset=1,
+  fluidRow(column(12,
                   HTML("<br>"),
                   HTML("<h5>This web app was written by"),
                   HTML("Carlos Díaz-Gil and Roc Itxart Alba"),

@@ -47,14 +47,14 @@ shinyServer(function(input, output) {
     withProgress(message = 'Running Population Model',
                  detail = 'This may take a while...',value = NULL, {
                    
-                   f1(data())
+                   f1(data(),input$iterationNumber,input$linfrange)
                    
                 })
   })
   
   output$pobparams <- renderTable({
      if(is.null(data())){return ()}
-     pobparams()[c(1:2,19),]
+     pobparams()
 
     })
   
@@ -64,17 +64,13 @@ shinyServer(function(input, output) {
      f3(pobparams(),data())
     })
     
-      
- # observeEvent(input$startIndividual, { 
-#    print(data)
-#    f2(data())
-#  })
+
 
 indparams <- reactive({
   withProgress(message = 'Running Individual Model',
                detail = 'This may take a while...',value = 0, {
                 
-                 f2(data())
+                 f2(data(),input$iterationNumber,input$linfrange)
                  
                })
 
@@ -83,7 +79,7 @@ indparams <- reactive({
 output$indparams <- renderTable({
   if(is.null(data())){return ()}
 
-  indparams()#[c(1:2,19),]
+  indparams()
   
 })
 
@@ -108,7 +104,7 @@ output$tb <- renderUI({
                   tabPanel("Population Parameters", #h4("Patience this may take a while... do not switch tabs!"),
 
                            tableOutput("pobparams")),tabPanel("Individual Parameters", tableOutput("indparams")),
-                  tabPanel("Population Plot",plotOutput(outputId = "pob_plot", height = "500px")),tabPanel("Individual Plot",plotOutput(outputId = "ind_plot", height = "1000px")))
+                  tabPanel("Population Plot",plotOutput(outputId = "pob_plot", height = "500px")),tabPanel("Individual Plot",plotOutput(outputId = "ind_plot", height = "500px")))
     
     })
 
