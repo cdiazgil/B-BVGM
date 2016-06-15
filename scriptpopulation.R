@@ -1,5 +1,5 @@
-f1 <- function(data){
-#------------------------------------------------
+f1 <- function(data, iterations, linfrange){
+  #------------------------------------------------
 # Fishery-dependent sampling may bias growth estimates
 
 # Supplementary material
@@ -58,7 +58,7 @@ library(R2jags)
 # POPULATION MODEL 1 observation per fish
 #-------------
   ###   EL LOAD VA AQUI SI NO FUNCIONA!!!!!!! metadata <- read.csv("data.csv",sep = ";")
-#data<-read.csv(file = "data.csv",sep=";")
+#data<-read.csv(file = "www/D.annularis.csv",sep=";")
 names(data)
 
 Radius=NULL
@@ -80,9 +80,9 @@ data2<-cbind.data.frame(fishID,Radius,Age)
 #-------------
 #STEP 1: INITIALS
 #-------------
-
+#linfrange<-c(100,300)
 inits <- function() list(
-  Linf=runif(1,1,10),
+  Linf=runif(1,linfrange[1],linfrange[2]),
   k=runif(1,0.15,0.25),
   T0=runif(1,-1,-0.5),
   tau=1
@@ -97,7 +97,8 @@ inits <- function() list(
 win.data <- list(
   nobs=length(data2$Age),
   age=data2$Age,
-  size=data2$Radius
+  size=data2$Radius,
+  maxAge=max(data2$Age)+2
 )
 
 #-------------
@@ -120,7 +121,7 @@ cat("
     sd<-1/sqrt(tau)
     
     #estimating size at age
-    for(i in 1 : 15) {
+  for(i in 1 : maxAge) {
     estimated[i]<-Linf*(1-exp(-k*(i-(T0))))
     }
     }
@@ -148,7 +149,8 @@ out <- jags(win.data, inits, params, "populationmodel.txt",
 # traceplot(out) #Keep hitting enter or escape to stop showing the plots
 
 # The MC have not converged so we update the model with more iterations
-out <- update(out, n.iter=5000,n.thin=100)## WARNING TIME CONSUMING
+#iterations=1000
+out <- update(out, n.iter=iterations,n.thin=100)## WARNING TIME CONSUMING
 
 # Ideally for assuring convergence in the estimation of the parameters
 # we need bigger number of iterations (for example see below)
@@ -185,17 +187,30 @@ f3 <- function(pobparams,data){
   
   data2<-cbind.data.frame(fishID,Radius,Age)
   attach(data2)
-# A plot to see the results
- #X11(height=5.9,width=6.9, pointsize=12) #Just for the right size
 
-#est=out$BUGSoutput$summary[4:11,]
-est=pobparams[4:11,]
-  plot(Age,Radius, pch= 1, cex=0.5, main="Von Bertalanffy Population Model",
-     ylab= "Size (units of size)", xlab="Age (years)", xlim=c(1,max(Age)), 
-     ylim=c(0, max(Radius)),las=1)
-# Median estimations of the parameters
-lines(seq(1,max(Age)),est[1:max(Age),5],type="l",col="blue",lwd=2) 
-# Credibility intervals of the estimations
-lines(seq(1,max(Age)),est[1:max(Age),3],col="red",lty=3)
-lines(seq(1,max(Age)),est[1:max(Age),7],col="red",lty=3)
+#est=out$BUGSoutput$summary
+est=pobparams
+
+
+plot(Age,Radius,type="n", pch= 1, cex=0.5, main="Von Bertalanffy Population Model",
+     ylab= "Size (units of size)", xlab="Age (years)", 
+     xlim=c(1,max(Age)+2), ylim=c(0, max(Radius)),las=1, col="grey")
+
+points(Age, Radius, col="grey", cex=0.5)
+pre=NULL
+for (i in 1:(max(Age)+2)){
+  temp2=parse(text=paste("est['estimated[",i,"]',
+                         c(3,5,7)]",sep = ""))
+  pre=rbind(pre,eval(temp2))
 }
+
+# Median estimations of the parameters
+lines(seq(1,max(Age)+2),pre[,2],type="l",col="blue",lwd=2) 
+# Credibility intervals of the estimations
+lines(seq(1,max(Age)+2),pre[,1],col="red",lty=3)
+lines(seq(1,max(Age)+2),pre[,3],col="red",lty=3)
+
+}
+
+
+
