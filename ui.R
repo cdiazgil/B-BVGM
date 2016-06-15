@@ -39,8 +39,6 @@ shinyUI(
                       h4("To get started you can use our example data from the paper 'Life-history growth-mortality tradeoffs as revealed by otolith geochemistry in a sedentary coastal fish' submitted to MEPS or load your own data. You only need to name 'size', 'age' and 'fishID' (which can be alphanumeric) columns."),
                       br(),
                       sidebarPanel(
-                        
-  #                      actionButton("goButton", "Use the example"),
                         p('If you want a sample .csv file to upload,',
                           'you can first download the sample',
                           a(href = 'example.csv', 'D.annularis.csv'),
@@ -60,9 +58,15 @@ shinyUI(
                                      c(Comma=',',
                                        Semicolon=';',
                                        Tab='\t'),
-                                     ',')
+                                     ';'),
                         
-                      ),
+                        sliderInput("linfrange", label = h3("Linf range"), min = 1, 
+                                    max = 300, value = c(1, 10)
+                                    ),
+                        
+                        sliderInput("iterationNumber", "Number of Iterations:", 
+                                    min=1000, max=100000, value=5000)
+                                    ),
                       
                       mainPanel(   
                         tags$link(rel="stylesheet", type="text/css",href="styles.css"),

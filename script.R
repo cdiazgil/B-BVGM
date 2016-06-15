@@ -1,4 +1,4 @@
-f1 <- function(data){
+f1 <- function(data, iterations, linfrange){
 #------------------------------------------------
 # Fishery-dependent sampling may bias growth estimates
 
@@ -82,7 +82,7 @@ data2<-cbind.data.frame(fishID,Radius,Age)
 #-------------
 
 inits <- function() list(
-  Linf=runif(1,1,10),
+  Linf=runif(1,linfrange[0],linfrange[1]),
   k=runif(1,0.15,0.25),
   T0=runif(1,-1,-0.5),
   tau=1
@@ -142,13 +142,13 @@ nc <- 3 #Number of Markov Chains
 
 # Launching JAGS with the poblational model
 out <- jags(win.data, inits, params, "populationmodel.txt", 
-            n.chains = nc, n.thin = nt, n.iter = ni, n.burnin = nb)
+            n.chains = nc, n.thin = nt, n.iter = iterations, n.burnin = nb)
 
 # The traceplots allow to see if the 3 Markov chains converge or not.
 # traceplot(out) #Keep hitting enter or escape to stop showing the plots
 
 # The MC have not converged so we update the model with more iterations
-out <- update(out, n.iter=5000,n.thin=100)## WARNING TIME CONSUMING
+out <- update(out, n.iter=iterations,n.thin=100)## WARNING TIME CONSUMING
 
 # Ideally for assuring convergence in the estimation of the parameters
 # we need bigger number of iterations (for example see below)

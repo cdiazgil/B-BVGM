@@ -46,7 +46,7 @@ shinyServer(function(input, output) {
   pobparams <- reactive({
     withProgress(message = 'LOADING...',
                  detail = 'This may take a while...',value = NULL, {
-                   f1(data())
+                   f1(data(),input$iterationNumber,input$linfrange)
                   })
     
   })
@@ -72,7 +72,7 @@ shinyServer(function(input, output) {
 indparams <- reactive({
   withProgress(message = 'Calculation in progress',
                detail = 'This may take a while...',value = 0, {
-                 f2(data())
+                 f2(data(),input$iterationNumber,input$linfrange)
                })
 
 })

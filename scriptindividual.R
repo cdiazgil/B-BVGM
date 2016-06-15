@@ -1,5 +1,4 @@
-
-f2 <- function(data){
+f2 <- function(data, iterations, linfrange){
 # Now is time for the Individual models
   library(R2jags) 
   
@@ -22,7 +21,6 @@ for (i in 1: length(unique(data$fishID))){
 }
 data$ID=ID
 
-
 #maximum age of each fish== later will be AGE
 Age=NULL
 for (i in 1: length(unique(data$fishID))){
@@ -33,7 +31,7 @@ maxage=max(Age)
 
 nfish=length(unique(data$fishID))# Sample size
 inits <- function() list(
-  Linf=runif(nfish,2,10),
+  Linf=runif(nfish,linfrange[0],linfrange[1]),
   k=runif(nfish,0,1),
   T0=runif(nfish,-1,1),
   tau=1,
@@ -117,12 +115,12 @@ params =c("T0","Linf","k","Linf.alpha","Linf.beta","k.alpha","k.beta",
 
 # MCMC settings
 nt <- 5
-ni <- 1000
+#ni <- 1000
 nb <- 100
 nc <- 3
 
 out <- jags(jags.data, inits, params, "individualmodel.txt", 
-            n.chains = nc, n.thin = nt, n.iter = ni, n.burnin = nb)
+            n.chains = nc, n.thin = nt, n.iter = iterations, n.burnin = nb)
 
 # Since this is calculating one curve per fish it is really time consuming and 
 # only a few traceplots are usefull to see if the Markov Chains have converged
@@ -207,7 +205,6 @@ f4 <- function(indparams,data){
         temp=which(F==i)
         lines(age[temp],size[temp])
       }
-    }  
+    } 
   }
-  
-  }
+}
