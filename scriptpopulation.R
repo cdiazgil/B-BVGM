@@ -191,11 +191,11 @@ f3 <- function(pobparams,data){
 #est=out$BUGSoutput$summary[4:11,]
 est=pobparams[4:11,]
   plot(Age,Radius, pch= 1, cex=0.5, main="Von Bertalanffy Population Model",
-     ylab= "Size (units of size)", xlab="Age (years)", xlim=c(1,8), 
-     ylim=c(0,5), las=1)
+     ylab= "Size (units of size)", xlab="Age (years)", xlim=c(1,max(Age)), 
+     ylim=c(0, max(Radius)),las=1)
 # Median estimations of the parameters
-lines(seq(1,8),est[1:8,5],type="l",col="blue",lwd=2) 
+lines(seq(1,max(Age)),est[1:max(Age),5],type="l",col="blue",lwd=2) 
 # Credibility intervals of the estimations
-lines(seq(1,8),est[1:8,3],col="red",lty=3)
-lines(seq(1,8),est[1:8,7],col="red",lty=3)
+lines(seq(1,max(Age)),est[1:max(Age),3],col="red",lty=3)
+lines(seq(1,max(Age)),est[1:max(Age),7],col="red",lty=3)
 }

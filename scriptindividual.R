@@ -32,6 +32,7 @@ f2 <- function(data){
   maxage=max(Age)
   
   nfish=length(unique(data$fishID))# Sample size
+ 
   inits <- function() list(
     Linf=runif(nfish,1,10),
     k=runif(nfish,0,1),
@@ -183,7 +184,7 @@ f4 <- function(indparams,data){
   
   for (j in 2:max(age)){
     plot(age,size,type="n",xlab="", ylab="", 
-         xlim= c(min(seq),max(seq)), ylim= c(0,5), las=1)
+         xlim= c(min(seq),max(seq)), ylim= c(0,max(size)), las=1)
     
     mtext("Von Bertalanffy Individual Model", side=3, line=0.5)
     mtext("Age (years)", side=1, line=2,cex=1)
