@@ -6,7 +6,7 @@
 #
 #setwd("D:/Shinny/Fishgrowth/")
 library(shiny)
-source("script.R")
+source("scriptpopulation.R")
 source("scriptindividual.R")
 
 
@@ -44,11 +44,12 @@ shinyServer(function(input, output) {
   #  print(data)
   # f1(data())})
   pobparams <- reactive({
-    withProgress(message = 'LOADING...',
+    withProgress(message = 'Running Population Model',
                  detail = 'This may take a while...',value = NULL, {
+                   
                    f1(data())
-                  })
-    
+                   
+                })
   })
   
   output$pobparams <- renderTable({
@@ -70,9 +71,11 @@ shinyServer(function(input, output) {
 #  })
 
 indparams <- reactive({
-  withProgress(message = 'Calculation in progress',
+  withProgress(message = 'Running Individual Model',
                detail = 'This may take a while...',value = 0, {
+                
                  f2(data())
+                 
                })
 
 })
