@@ -1,20 +1,25 @@
 
-    model {
-    for( i in 1 : nobs ) {
-    mu[i]<-Linf*(1-exp(-k*(age[i]-T0))) #this is the von Bertalanffy model
-    size[i] ~ dnorm(mu[i],tau)
-    }
-    #priors
-    T0~dunif(-2,2)
-    k~dunif(0,1)
-    Linf~dunif(0,300)
-    #prior variances
-    tau ~ dgamma(0.001,0.001)
-    sd<-1/sqrt(tau)
-    
-    #estimating size at age
-  for(i in 1 : maxAge) {
-    estimated[i]<-Linf*(1-exp(-k*(i-(T0))))
-    }
-    }
-    
+      model {
+      for( i in 1 : nobs ) {
+        mu[i]<-Linf*(1-exp(-k*(age[i]-T0))) #this is the von Bertalanffy model
+        size[i] ~ dnorm(mu[i],tau)
+      }
+      
+      #priors
+        T0~dunif(-2,2)
+        k~dunif(0,1)
+        Linf~dunif(Linfmin,Linfmax)
+  
+      #prior variances
+        
+        tau ~ dgamma(0.001,0.001)
+        sd<-1/sqrt(tau)
+      
+      #estimating size at age
+      
+      for(i in 1 : maxAge) {
+        estimated[i]<-Linf*(1-exp(-k*(i-(T0))))
+      }
+      
+   }
+      
