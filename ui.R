@@ -1,18 +1,21 @@
-# This is the user-interface definition of a Shiny web application.
-# You can find out more about building applications with Shiny here:
-#
-# http://shiny.rstudio.com
-#
 
+# This is the user-interface definition for the Bayesian von Bertalanffy Growth Model
+# Shiny web application.
+
+# Loading library and source code
 library(shiny)
+
+
+# User interface
 
 shinyUI(
  fluidPage(
    
   # Application title
-  titlePanel("B-VBGM! Bayesian Von Bertalanffy Growth Model"),
-  # Application title
- # HTML("<font face='georgia' color=#000080><h1>Wise Catfish Farmer <img src='catfish.png' height='40' width='100' align='right'></font></h1>"),
+    titlePanel("B-VBGM! Bayesian Von Bertalanffy Growth Model"),
+    
+   
+  # Application 
   navbarPage(NULL,
              tabPanel("Introduction",
                       h2("Welcome fish friend!", align = "center"),
@@ -45,9 +48,10 @@ shinyUI(
                         
   #                      actionButton("goButton", "Use the example"),
                         p('If you want a sample .csv file to upload,',
-                          'you can first download the sample',
-                          a(href = 'D.annularis.csv', 'D.annularis.csv'),
-                          'file, and then try uploading them.'
+                          'you can first download the samples from the two populations',
+                          a(href = 'DannularisPalma.csv','Palma Bay'),'and',
+                          a(href = 'DannularisCabrera.csv','Cabrera National Park'),
+                          'files, and then try uploading them.'
                         ),
                         tags$hr(),
                         
@@ -66,7 +70,7 @@ shinyUI(
                                      ';'),
                         tags$hr(),
                         sliderInput("linfrange", label = h3("Linf range:"), min = 1, 
-                                    max = 300, value = c(1, 10)
+                                    max = 500, value = c(1, 10)
                         ),
                         
                         sliderInput("iterationNumber", label=h3("Number of Iterations:"), 
@@ -135,3 +139,22 @@ shinyUI(
                   a("Contact Carlos about the app.", href="mailto:cdiaz@imedea.uib-csic.es")
   ))
 ))
+
+#------------------------------------------------------------
+
+# "Life-history growth-mortality tradeoffs as revealed by 
+#  otolith geochemistry in a sedentary coastal fish"
+
+# I.A. Catalán, J. Alós, C. Díaz-Gil, S. Pérez, 
+# G. Basterretxea, B. Morales-Nin and M. Palmer
+
+# Bayesian von Bertalanffy Growth Model (B-VBGM)
+# Model designed and implemented by Miquel Palmer
+# Shiny app designed and constructed by Carlos Díaz-Gil and
+# Roc Itxart Alba
+# 
+#
+# Mediterranean Institute for Advanced Studies (IMEDEA UIB-CSIC)
+# Laboratory of Marine Research and Aquaculture (LIMIA)
+#
+#------------------------------------------------------------

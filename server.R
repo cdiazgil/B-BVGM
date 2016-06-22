@@ -1,14 +1,13 @@
 
-# This is the server logic for a Shiny web application.
-# You can find out more about building applications with Shiny here:
-#
-# http://shiny.rstudio.com
-#
-#setwd("D:/Shinny/Fishgrowth/")
+# This is the server logic for the Bayesian von Bertalanffy Growth Model
+# Shiny web application.
+# 
+# Loading library and source code
 library(shiny)
 source("scriptpopulation.R")
 source("scriptindividual.R")
 
+# Server
 
 shinyServer(function(input, output) {
 
@@ -25,26 +24,25 @@ shinyServer(function(input, output) {
     
     if (is.null(file1))
       return(NULL)
-    
-  head(read.csv(file1$datapath, header=input$header, sep=input$sep))
-  })
+          head(read.csv(file1$datapath, header=input$header, sep=input$sep))
+    })
   
   
   
   
-  data<-reactive({
-    file1<-input$file
-    if(is.null(file1)){return()}
-    read.csv(file1$datapath, header=input$header, sep=input$sep)
-  })
+    data<-reactive({
+      file1<-input$file
+      if(is.null(file1)){return()}
+      read.csv(file1$datapath, header=input$header, sep=input$sep)
+    })
   
     
   
   #observeEvent(input$startPoblacional, { 
   #  print(data)
   # f1(data())})
-  pobparams <- reactive({
-    withProgress(message = 'Running Population Model',
+    pobparams <- reactive({
+      withProgress(message = 'Running Population Model',
                  detail = 'This may take a while...',value = NULL, {
                    
                    f1(data(),input$iterationNumber,input$linfrange)
@@ -101,12 +99,27 @@ output$tb <- renderUI({
       h5("Powered by", tags$img(src="logo.png", heigth=300, width=300))
     else
       tabsetPanel(tabPanel("Importing file", tableOutput("contents")),
-                  tabPanel("Population Parameters", #h4("Patience this may take a while... do not switch tabs!"),
-
-                           tableOutput("pobparams")),tabPanel("Individual Parameters", tableOutput("indparams")),
+                  tabPanel("Population Parameters", tableOutput("pobparams")),tabPanel("Individual Parameters", tableOutput("indparams")),
                   tabPanel("Population Plot",plotOutput(outputId = "pob_plot", height = "500px")),tabPanel("Individual Plot",plotOutput(outputId = "ind_plot", height = "500px")))
     
     })
 
 })
 
+#------------------------------------------------------------
+# "Life-history growth-mortality tradeoffs as revealed by 
+#  otolith geochemistry in a sedentary coastal fish"
+
+# I.A. Catalán, J. Alós, C. Díaz-Gil, S. Pérez, 
+# G. Basterretxea, B. Morales-Nin and M. Palmer
+
+# Bayesian von Bertalanffy Growth Model (B-VBGM)
+# Model designed and implemented by Miquel Palmer
+# Shiny app designed and constructed by Carlos Díaz-Gil and
+# Roc Itxart Alba
+# 
+#
+# Mediterranean Institute for Advanced Studies (IMEDEA UIB-CSIC)
+# Laboratory of Marine Research and Aquaculture (LIMIA)
+#
+#------------------------------------------------------------
