@@ -1,36 +1,40 @@
 
-    model {
-      for( i in 1 : nobs ) {
-      mu[i]<-Linf[ID[i]]*(1-exp(-k[ID[i]]*(age[i]-T0[ID[i]])))
-      #size[i] ~ dnorm(mu[i],tau)
-      shape[i]<-(mu[i]/sd)^2
-      rate[i]<-mu[i]/(sd)^2
-      size[i] ~ dgamma(shape[i],rate[i])
-      }
-      
-      #priors individual fish (ojo!the same within group variance)
-      for( i in 1 : nfish ) {
-      T0[i]~dnorm(mT0,tauT0)
-      k[i]~dnorm(mk,tauk)
-      Linf[i]~dnorm(mLinf,tauLinf)
-      }
-      
-      #prior groups
-      mT0~dunif(-2,2)
-      mk~dunif(0,1)
-      mLinf~dunif(Linfmin,Linfmax)
-      
-      #prior variances (flat prior)
-      tau ~ dgamma(0.001,0.001)
-      sd<-1/sqrt(tau)
-      tauT0 ~ dgamma(0.001,0.001)
-      tauk ~ dgamma(0.001,0.001)
-      tauLinf ~ dgamma(0.001,0.001)
-     
-#estimating size at age
-    for(i in 1 : maxAge) {
-    estimated[i]<-mLinf*(1-exp(-mk*(i-(mT0))))
-    }
+      model {
+        for( i in 1 : nobs ) {
+          mu[i]<-Linf[ID[i]]*(1-exp(-k[ID[i]]*(age[i]-T0[ID[i]])))
+          #size[i] ~ dnorm(mu[i],tau)#Here you can change from a gamma distribution to a normal distribution
+          shape[i]<-(mu[i]/sd)^2
+          rate[i]<-mu[i]/(sd)^2
+          size[i] ~ dgamma(shape[i],rate[i])
+          }
+        
+        #priors individual fish (the same within group variance)
+        
+        for( i in 1 : nfish ) {
+          T0[i]~dnorm(mT0,tauT0)
+          k[i]~dnorm(mk,tauk)
+          Linf[i]~dnorm(mLinf,tauLinf)
+          }
+        
+        #prior groups
 
-}
-      
+          mT0~dunif(-2,2)
+          mk~dunif(0,1)
+          mLinf~dunif(Linfmin,Linfmax)
+        
+        #prior variances (flat prior)
+
+          tau ~ dgamma(0.001,0.001)
+          sd<-1/sqrt(tau)
+          tauT0 ~ dgamma(0.001,0.001)
+          tauk ~ dgamma(0.001,0.001)
+          tauLinf ~ dgamma(0.001,0.001)
+       
+        #estimating size at age
+        
+        for(i in 1 : maxAge) {
+          estimated[i]<-mLinf*(1-exp(-mk*(i-(mT0))))
+        }
+  
+  }
+        
