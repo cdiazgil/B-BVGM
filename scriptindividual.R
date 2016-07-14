@@ -5,11 +5,11 @@ f2 <- function(data, iterations, linfrange){
   # "Life-history growth-mortality tradeoffs as revealed by 
   #  otolith geochemistry in a sedentary coastal fish"
     
-  # I.A. Catalán, J. Alós, C. Díaz-Gil, S. Pérez, 
+  # I.A. Catalan, J. Alos, C. Diaz-Gil, S. Perez, 
   # G. Basterretxea, B. Morales-Nin and M. Palmer
     
   # Model designed and implemented by Miquel Palmer
-  # Shiny app designed and constructed by Carlos Díaz-Gil and
+  # Shiny app designed and constructed by Carlos Diaz-Gil and
   # Roc Itxart Alba
   # 
   #
@@ -62,8 +62,10 @@ f2 <- function(data, iterations, linfrange){
   
   # Manual load of the data of interest
     
-    #data<-read.csv(file = "www/DannularisPalma.csv",sep=";")
+  # data<-read.csv(file = "www/DannularisPalma.csv",sep=";")
   
+    
+    
   # Getting a numeric ID for each fish that repeat itself
   
     ID=NULL
@@ -93,7 +95,7 @@ f2 <- function(data, iterations, linfrange){
   
   # linfrange is an input from the shiny app, it can be changed manually here
     
-    #linfrange<-c(100,400)
+  #  linfrange<-c(100,400)
   
   ## These are the initial values of the bayesian model
   
@@ -223,6 +225,16 @@ f2 <- function(data, iterations, linfrange){
   # Or
     out$BUGSoutput$summary
   
+  #this is to assure a clean save of the results.
+  col.names<-c("Parameter", "mean" , "sd"  ,  "2.5%" , "25%"  , "50%" ,  "75%" ,  "97.5%" ,"Rhat" , "n.eff")
+  row.names<-rownames(out$BUGSoutput$summary)
+  a<-array(cbind(row.names,signif(out$BUGSoutput$summary,3)), dim=c(dim(out$BUGSoutput$summary)[1],dim(out$BUGSoutput$summary)[2]+1))
+  dim(a)
+  colnames(a)<-col.names
+  results<-a
+  results<-print(results, row.names=FALSE)
+  
+  
 }
 
 # Plot to see the results
@@ -233,7 +245,7 @@ f4 <- function(indparams,data){
   # you are using this manually you will need to get "est" from the
   # bugsoutput (See line below)
   
-    #individual= out$BUGSoutput$summary
+  # individual= results
     individual=indparams
     
   # This part reshape the data as at the beginning but for the plotting
@@ -276,12 +288,13 @@ f4 <- function(indparams,data){
   }
   
   #Get the estimated values
-  
   pre=NULL
-  for (i in 1:(maxAge+2)){
-    temp2=parse(text=paste("individual['estimated[",i,"]',
-                           c(3,5,7)]",sep = ""))
-    pre=rbind(pre,eval(temp2))
+  
+  for (i in 1:(max(Age)+2)){
+    temp=parse(text=paste("'estimated[",i,"]'",sep = ""))
+    
+    temp2<-individual[which(individual[,1]==eval(temp)),c(4,6,8)]
+    pre=rbind(pre,temp2)
   }
   
   # Median estimations of the parameters

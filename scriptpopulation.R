@@ -4,11 +4,11 @@ f1 <- function(data, iterations, linfrange){
   # "Life-history growth-mortality tradeoffs as revealed by 
   #  otolith geochemistry in a sedentary coastal fish"
   
-  # I.A. Catalán, J. Alós, C. Díaz-Gil, S. Pérez, 
+  # I.A. Catalan, J. Alos, C. Diaz-Gil, S. Perez, 
   # G. Basterretxea, B. Morales-Nin and M. Palmer
   
   # Model designed and implemented by Miquel Palmer
-  # Shiny app designed and constructed by Carlos Díaz-Gil and
+  # Shiny app designed and constructed by Carlos Diaz-Gil and
   # Roc Itxart Alba
   # 
   #
@@ -59,7 +59,8 @@ f1 <- function(data, iterations, linfrange){
   #-------------
   
   # Manual load of the data of interest
-  # data<-read.csv(file = "www/D.annularis.csv",sep=";")
+   
+  #data<-read.csv(file = "www/DannularisPalma.csv",sep=";")
   
   
   # Getting one measurement per fish (the radius of the otolith
@@ -186,8 +187,16 @@ f1 <- function(data, iterations, linfrange){
     print(out)
   
   # Or
+  out$BUGSoutput$summary
   
-    out$BUGSoutput$summary
+  #this is to assure a clean save of the results.
+  col.names<-c("Parameter", "mean" , "sd"  ,  "2.5%" , "25%"  , "50%" ,  "75%" ,  "97.5%" ,"Rhat" , "n.eff")
+  row.names<-rownames(out$BUGSoutput$summary)
+  a<-array(cbind(row.names,signif(out$BUGSoutput$summary,3)), dim=c(dim(out$BUGSoutput$summary)[1],dim(out$BUGSoutput$summary)[2]+1))
+  dim(a)
+  colnames(a)<-col.names
+  results<-a
+  results<-print(results, row.names=FALSE)
 
 }
 
@@ -210,8 +219,8 @@ f3 <- function(pobparams,data){
   # The plot is made out of the shiny app output but in case
   # you are using this manually you will need to get "est" from the
   # bugsoutput (See line below)
-  
-    #est=out$BUGSoutput$summary
+    
+    #est=results
     est=pobparams 
 
 
@@ -221,11 +230,14 @@ f3 <- function(pobparams,data){
 
   points(Age, Radius, col="grey", cex=0.5)
   pre=NULL
+ 
   for (i in 1:(max(Age)+2)){
-    temp2=parse(text=paste("est['estimated[",i,"]',
-                           c(3,5,7)]",sep = ""))
-    pre=rbind(pre,eval(temp2))
+    temp=parse(text=paste("'estimated[",i,"]'",sep = ""))
+    
+    temp2<-est[which(est[,1]==eval(temp)),c(4,6,8)]
+    pre=rbind(pre,temp2)
   }
+  
   
   # Median estimations of the parameters
     
